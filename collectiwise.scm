@@ -1,19 +1,19 @@
-
+(load "/home/ubuntu/collectiwise/load_all.scm")
+(add-to-load-path "/home/ubuntu/collectiwise")
+(load "/home/ubuntu/collectiwise/math.scm")
+(load-from-path "utility_functions.scm")
 (add-to-load-path "/home/ubuntu/opencog/opencog/pln/rules/term/")
 (load "/home/ubuntu/opencog/opencog/pln/rules/term/deduction.scm")
-(load "/home/ubuntu/collectiwise/load_all.scm")
+(print "yo")
 (use-modules (ice-9 readline)) (activate-readline)
 (add-to-load-path "/usr/local/share/opencog/scm")
 (add-to-load-path ".")
-(add-to-load-path "/home/ubuntu/collectiwise")
-;(add-to-load-path "home/collectiwise/")
+(add-to-load-path "home/collectiwise/")
 (use-modules (opencog))
 (use-modules (opencog query))
 (use-modules (opencog exec))
 (use-modules (opencog pln))
-;(add-to-load-path "..")
-(load-from-path "math.scm")
-(load-from-path "utility_functions.scm")
+(add-to-load-path "..")
 (define shares (ConceptNode "shares"))
 (define score (Concept "score")) 
 (define User (ConceptNode "User" (stv 0.01 1)))
@@ -47,6 +47,14 @@
 (is-a "User" "Human" 1)
 (is-a "Human" "Animal" 1)
 
+(define (sum elemList)
+  (if
+    (null? elemList)
+    (NumberNode 0)
+    (cog-execute! (PlusLink (car elemList) (sum (cdr elemList))))
+  )
+)
+
 (define find-users
     (BindLink
         (VariableNode "$X")
@@ -73,24 +81,65 @@
 	(cog-set-value! usr score (NumberNode 100000))
 )
 
-; cost function for the logarithmic scoring rule:
-
-(define (cost quantities b) 
-	(define (inner) (map (lambda (n) (exp (/ n b))) quantities))
-	(* b (log (list_sum (inner)))))
-
-; the price of one case among n cases
-(define (price qs q b)
-	(define (inner) (map (lambda (n) (exp (/ n b))) qs))
-	(/ (exp (/ q b)) (list_sum (inner))))
-
 (define (quantities ps b)
-	(define p1 (car ps))
+	(define p1 (car ps))                              ; cost function for the logarithmic scoring rule:
 	(map (lambda (n) (* b (log (exp (/ n p1))))) ps))
 
 ; creating a new proposition one ought to commit some tokens. 
 (define (set-quantity predicate n) (cog-set-value! predicate shares (NumberNode n)))
 (define (quantity predicate) (define inner (cog-value predicate shares)) inner)
+
+
+
+(define (cost quantz b) 
+	(define (inner) (map (lambda (n) (exp (/ n b))) quantz))
+	(* b (log (list_sum (inner)))))
+
+(define (change-cost predicate p b)
+ 	(define quantitees (list (cog-number (quantity predicate)) (cog-number (quantity (Not predicate)))))
+	(define new_quantities (quantities (list p (- 1 p)) b)) 	
+	(define old_cost (cost quantitees b))
+	(define inner (map (lambda (n) (exp (/ n b))) new_quantities))
+        (define new_cost (* b (log (list_sum inner))))
+	;(if (positive? (- p (cog-stv-strength predicate))) (- old_cost new_cost) (- new_cost old_cost))
+	(- new_cost old_cost)
+)
+
+(define (change-quantity predicate p b)
+	(define quantitees (list (cog-number (quantity predicate)) (cog-number (quantity (Not predicate)))))
+ 	(define new_quantities (quantities (list p (- 1 p)) b))
+	(map - new_quantities quantitees) 	
+)
+
+(define (expected-gain probs quantz)
+	(list_sum (map * probs quantz))  
+)
+
+(define (worst-case quantz)
+	(list_min quantz)
+)
+
+(define (best-case quantz)
+	(list_max quantz)
+)
+
+(define (lookup_cases predicate p b)
+	(define costs (change-cost predicate p b))
+	(define quantz (change-quantity predicate p b))
+	(list (- (worst-case quantz) costs) (- (expected-gain (list p (- 1 p)) quantz) costs) (- (best-case quantz) costs))
+)
+; the price of one case among n cases
+(define (price qs q b)
+	(define (inner) (map (lambda (n) (exp (/ n b))) qs))
+	(/ (exp (/ q b)) (list_sum (inner))))
+
+
+
+
+
+
+
+
 ;(define (set-user-quantity user p n))
 
 ; Functions we still need:
@@ -131,19 +180,36 @@
 (define (user-shares user predicate) (define inner (cog-value (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares)) (if (null? inner) (NumberNode 0) inner))
 
 (define (mk-predicate user predicate p b)
-	(define qs (quantities (list p (- 1 p)) b))
+	(define qs (quantities (list 0.5 0.5) b)) ;the maker of the predicate must only pay for an even odds bet and then can set the probabilities for free because she in a sense buys shares from herself. 
+	(define NotPQ (* b (log (exp (/ (- 1 p) p)))))	
 	(define points (cost qs b)) 
 	(define pred (Predicate predicate (stv p 1)))
+	(cog-execute! negation-introduction-rule) ;re-sets the prices on all negated predicates in the whole AtomSpace, based on current prices of all positive predicates. 	(define NotPQ (* b (log (exp (/ (- 1 p) p))))) 	
+	(print (Not pred))
 	(made-by pred user)
+	(made-by (Not pred) user) ; by making a statement about a predicate, one automatically makes a statement about its opposite; whatever that may be (in the case of fast, the opposite is slow). 
 	(add-score user (- points))
 	(set-user-shares user pred b)
+	
+	;the quantity for the not-predicate 
+	(set-user-shares user (Not pred) NotPQ)
 	(set-quantity pred b)
+	(set-quantity (Not pred) NotPQ) 
 	(attach pred user)
-;have to add the negation rule here so that the user also has a quantity of "shares" of the negation of the predicate
-;corresponding with the probability of the negation of the predicate.	
+	(attach (Not pred) user)
+	
 ) 
 
-
+;(define (change-cost predicate quant)
+;	(define quantities (list (quantity predicate) (quantity (Not predicate))))
+;	b*ln(sum([e**(qi/b) for qi in quantities])) - (cost quantities b)
+;)
+(define (change-predicate user predicate p b)
+	(define volume (quantity predicate))
+	(define p_old (cog-tv-strength predicate))  
+	(define new_volume (* b (log (* (exp (/ volume b) (/ p p_old))))))
+	(attach predicate user)
+)
 ;(print (cost '(1 2) 10))
 ;(print (cost '(1 2 3)  10))
 ;(print (price '(1 3 2) 1 10));
@@ -162,6 +228,16 @@
 (print (user-shares hanna (PredicateNode "is-fast")))
 (print (get-maker (PredicateNode "is-fast")))
 (print (get-pred-users (PredicateNode "is-fast")))
+(print (Not (PredicateNode "is-fast")))
 ;(print (cog-execute! find-users))
 ;(print (mk-predicate (ConceptNode "Hanna") "is-fast" 0.6 10))
-;(print (cog-execute! predicate-search))        
+;(print (cog-execute! predicate-search))      
+(print (get-pred-users (Not (PredicateNode "is-fast")))) 
+(print (change-cost (PredicateNode "is-fast") 0.01 10))
+(print (change-quantity (PredicateNode "is-fast") 0.01 10)) 
+(print (change-cost (PredicateNode "is-fast") 0.9 10))
+(print (change-quantity (PredicateNode "is-fast") 0.9 10))
+(print (expected-gain (list 0.9 0.1) (change-quantity (PredicateNode "is-fast") 0.9 10)))
+(print (worst-case (change-quantity (PredicateNode "is-fast") 0.9 10)))
+(print (best-case (change-quantity (PredicateNode "is-fast") 0.9 10)))  
+(print (lookup_cases (PredicateNode "is-fast") 0.9 10)) 

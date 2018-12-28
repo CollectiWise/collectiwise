@@ -21,8 +21,17 @@
         (sum 0 (+ sum (car x ))))
        ((null? x) sum))))
 
+(define (list_min lst)
+    (cond ((null? (cdr lst)) (car lst))
+          ((< (car lst) (list_min (cdr lst))) (car lst))
+          (else (list_min (cdr lst)))) )
 
-(print (square 3))
-(print (average 3 4))
+(define (list_max lst)
+    (cond ((null? (cdr lst)) (car lst))                
+        ((> (car lst) (list_max (cdr lst))) (car lst))
+	(else (list_max (cdr lst)))) )
+
 (print (sqrt 9))
 (print (list_sum (list 1 2 2)))
+(print (average 3 4)) 
+(print (square 3)) 
