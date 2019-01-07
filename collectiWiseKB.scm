@@ -144,6 +144,8 @@
 ;(print maker)
 (print (find-context java))
 
+(mk-predicate-with-objects johannes is-fast (ListLink johannes) 0.8 10)
+
 
 ; is Johannes fast?  Now here please recognize that the first number in the stv (the only relevant one for the time being) can be interpreted as a probability if a person can either be fast or slow, or it could be interpreted as a degree of being fast.  Once there is evidence, the probability and thus the market price of the value will either rise or decline, depending on the evidence and thus the value of holding shares (if you will) in the speed of Johannes will rise or decline, depending on the evidence and depending on others beliefs:
 
@@ -162,5 +164,5 @@
 ;(define ms 3)
 (use-modules (opencog miner))
 (define minedPatterns (cog-mine (cog-atomspace)) )
-;(print minedPatterns)
-;(help cog-mine)
+;(print (module-content pln))
+;;(help cog-mine)

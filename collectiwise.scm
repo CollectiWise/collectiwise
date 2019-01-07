@@ -234,7 +234,14 @@
 	(ContextLink (stv p 1)
 		Context
 		statement))
- 
+
+(define (predicate-objectify statement list-link-objects p)
+	(EvaluationLink (stv p 1)
+		statement
+		list-link-objects
+		
+	)
+) 
 (define (mk-context-predicate user NC predicate p b)
 	
 	(define context-predicate (contextualize predicate NC p)) 
@@ -249,19 +256,15 @@
 (define (change-context-predicate user NC predicate p b)
 	(define neg-pred (Not predicate)) 	
 	(define context-predicate (contextualize predicate NC p))    	
-	
-                                                             
 	(define context-negpred (contextualize neg-pred NC (- 1 p))) 	;(define context-predicate
-	;(ContextLink (stv p 1)
-	;	NC
-	;	predicate))
-	;(define neg-pred (Not predicate))
-
-	;(;define context-negpred
-	;(ContextLink (stv (- 1 p) 1)
-	;	NC
-	;	neg-pred))
 	(change-binary-statement user context-predicate context-negpred p b)
+)
+
+(define (mk-predicate-with-objects user predicate list-link-objects p b)
+	(define neg-pred (Not predicate))
+	(define predicate-with-objects (predicate-objectify predicate list-link-objects p))
+	(define negpred-with-objects  (predicate-objectify neg-pred list-link-objects (- 1 p)))
+	(mk-binary-statement user predicate-with-objects negpred-with-objects p b)
 )
 
 (define (find-context context)
@@ -274,7 +277,7 @@
         (ListLink
             (VariableNode "$X")))))
 
-      
+
 ;(mk-context-predicate (ConceptNode "Johannes Castner") (ConceptNode "Java") (PredicateNode "is-fast" (stv 0.7 1)) 0.2 10)
 
 ;(print (find-context (ConceptNode "Java")))
