@@ -95,8 +95,8 @@
 	(define (inner) (map (lambda (n) (exp (/ n b))) quantz))
 	(* b (log (list_sum (inner)))))
 
-(define (change-cost predicate p b)
- 	(define quantitees (list (cog-number (quantity predicate)) (cog-number (quantity (Not predicate)))))
+(define (change-cost statement neg-statement p b)
+ 	(define quantitees (list (cog-number (quantity statement)) (cog-number (quantity neg-statement))))
 	(define new_quantities (quantities (list p (- 1 p)) b)) 	
 	(define old_cost (cost quantitees b))
 	(define inner (map (lambda (n) (exp (/ n b))) new_quantities))
@@ -105,8 +105,8 @@
 	(- new_cost old_cost)
 )
 
-(define (change-quantity predicate p b)
-	(define quantitees (list (cog-number (quantity predicate)) (cog-number (quantity (Not predicate)))))
+(define (change-quantity statement neg-statement p b)
+	(define quantitees (list (cog-number (quantity statement)) (cog-number (quantity neg-statement))))
  	(define new_quantities (quantities (list p (- 1 p)) b))
 	(map - new_quantities quantitees) 	
 )
@@ -179,110 +179,110 @@
 (define (set-user-shares user predicate n) (cog-set-value! (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares (NumberNode n)))
 (define (user-shares user predicate) (define inner (cog-value (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares)) (if (null? inner) (NumberNode 0) inner))
 
-(define (mk-predicate user predicate p b)
-	(define qs (quantities (list 0.5 0.5) b)) ;the maker of the predicate must only pay for an even odds bet and then can set the probabilities for free because she in a sense buys shares from herself. 
+(define (mk-binary-statement user statement neg-statement p b)
+	(define qs (quantities (list 0.5 0.5) b))
 	(define NotPQ (* b (log (exp (/ (- 1 p) p)))))	
-	(define points (cost qs b)) 
-	(define pred (Predicate predicate (stv p 1)))
-	(cog-set-tv! (Not pred) (stv (- 1 p) 1))
-	;(cog-execute! negation-introduction-rule) ;re-sets the prices on all negated predicates in the whole AtomSpace, based on current prices of all positive predicates. 	(define NotPQ (* b (log (exp (/ (- 1 p) p))))) 	
-	;(print (Not pred))
-	(made-by pred user)
-	(made-by (Not pred) user) ; by making a statement about a predicate, one automatically makes a statement about its opposite; whatever that may be (in the case of fast, the opposite is slow). 
+ 	(define points (cost qs b))
+	(cog-set-tv! neg-statement (stv (- 1 p) 1))
+	(made-by statement user)
+	(made-by neg-statement user)
 	(add-score user (- points))
-	(set-user-shares user pred b)
-	
-	;the quantity for the not-predicate 
-	(set-user-shares user (Not pred) NotPQ)
-	(set-quantity pred b)
-	(set-quantity (Not pred) NotPQ) 
-	(attach pred user)
-	(attach (Not pred) user)
-	
+	(set-user-shares user statement b)
+	(set-user-shares user neg-statement NotPQ)
+	(set-quantity statement b)
+	(set-quantity neg-statement NotPQ)  
+	(attach statement user)
+	(attach neg-statement user) 	
+  )
+
+(define (mk-predicate user predicate p b)
+	(define pred (Predicate predicate (stv p 1)))
+	(define neg-pred (Not pred)) 	 	
+	(mk-binary-statement user pred neg-pred p b)	
 ) 
 
 ;(define (change-cost predicate quant)
 ;	(define quantities (list (quantity predicate) (quantity (Not predicate))))
 ;	b*ln(sum([e**(qi/b) for qi in quantities])) - (cost quantities b)
 ;)
-(define (change-predicate user predicate p b)
-	(define maker (get-maker predicate))
-	(define costs (change-cost predicate p b))
-	(define quantz (change-quantity predicate p b))
-	(define user-quantz (map + (list (cog-number (user-shares user predicate)) (cog-number (user-shares user (Not predicate)))) quantz))     	
-	(define maker-quantz (map - (list (cog-number (user-shares maker predicate)) (cog-number (user-shares maker (Not predicate)))) quantz))
-	(define pred-quantz (map + (list (cog-number (quantity predicate)) (cog-number (quantity (Not predicate)))) quantz))  	
-	(cog-set-tv! predicate (stv p 1))
-	(cog-set-tv! (Not predicate) (stv (- 1 p) 1))
-	;(cog-execute! negation-introduction-rule) 
-	(print (Not predicate))
-	(add-score maker costs)
-	(add-score user (- costs))
-       
-	;selling shares from the maker to the user so that the predicate has the right number to give rise to the user-determined probabilities
-	;note that the maker can change probabilities free of charge, only altering her expected gains and potential losses in the future.
+(define (change-binary-statement user statement neg-statement p b)
 
-
-	
-	(map attach (list predicate (Not predicate)) (list user user))
-	(map set-user-shares (list user user) (list predicate (Not predicate)) user-quantz)
-	(map set-user-shares (list maker maker) (list predicate (Not predicate)) maker-quantz)
-	(map set-quantity (list predicate (Not predicate)) pred-quantz)
+	(define maker (get-maker statement))
+	(define costs (change-cost statement neg-statement p b))
+	(define quantz (change-quantity statement neg-statement p b))
+	(define user-quantz (map + (list (cog-number (user-shares user statement)) (cog-number (user-shares user neg-statement))) quantz))    
+	(define maker-quantz (map - (list (cog-number (user-shares maker statement)) (cog-number (user-shares maker neg-statement))) quantz))
+	(define statement-quantz (map + (list (cog-number (quantity statement)) (cog-number (quantity neg-statement))) quantz)) 
+  	(cog-set-tv! statement (stv p 1))
+  	(cog-set-tv! neg-statement (stv (- 1 p) 1))
+  	
+  	(add-score maker costs)
+  	(add-score user (- costs))
+	(map attach (list statement neg-statement) (list user user))                          
+	(map set-user-shares (list user user) (list statement neg-statement) user-quantz)
+	(map set-user-shares (list maker maker) (list statement neg-statement) maker-quantz)
+	(map set-quantity (list statement neg-statement) statement-quantz)
 )
+
+(define (change-predicate user predicate p b)
+	(define neg-pred (Not predicate))
+	(change-binary-statement user predicate neg-pred p b)
+
+)
+
+(define (contextualize statement Context p)
+	(ContextLink (stv p 1)
+		Context
+		statement))
+ 
+(define (mk-context-predicate user NC predicate p b)
+	
+	(define context-predicate (contextualize predicate NC p)) 
+	(define neg-pred (Not predicate))
+
+	(define context-negpred (contextualize neg-pred NC (- 1 p))) 
+
+	(mk-binary-statement user context-predicate context-negpred p b)		
+
+)
+
+(define (change-context-predicate user NC predicate p b)
+	(define neg-pred (Not predicate)) 	
+	(define context-predicate (contextualize predicate NC p))    	
+	
+                                                             
+	(define context-negpred (contextualize neg-pred NC (- 1 p))) 	;(define context-predicate
+	;(ContextLink (stv p 1)
+	;	NC
+	;	predicate))
+	;(define neg-pred (Not predicate))
+
+	;(;define context-negpred
+	;(ContextLink (stv (- 1 p) 1)
+	;	NC
+	;	neg-pred))
+	(change-binary-statement user context-predicate context-negpred p b)
+)
+
+(define (find-context context)
+    (cog-execute! 
+	(BindLink
+        	(VariableNode "$X")
+        	(ContextLink
+	    		context
+            	(VariableNode "$X"))
+        (ListLink
+            (VariableNode "$X")))))
+
+      
+;(mk-context-predicate (ConceptNode "Johannes Castner") (ConceptNode "Java") (PredicateNode "is-fast" (stv 0.7 1)) 0.2 10)
+
+;(print (find-context (ConceptNode "Java")))
 ;(print (cost '(1 2) 10))
 ;(print (cost '(1 2 3)  10))
 ;(print (price '(1 3 2) 1 10));
 ;(print (price '(1 5) 1 10))
 ;(print (quantities '(0.6 0.4) 10))
 ;(print (price (quantities '(0.6 0.4) 10) 10 10))
-(make-user "john" "steward")
-(make-user "hanna" "rodwinkle")
-(define john (ConceptNode "john steward"))
-(define hanna (ConceptNode "hanna rodwinkle"))
-;(print (cog-value john score))
-;(mk-predicate hanna "is-fast" 0.5 10) ; john asserts that the probability of something being fast is 0.5 and pays some cost to assert that
-;(attach (PredicateNode "is-fast") john)
-;(print "john's score")
-;(print (cog-value john score))
-;(print "hanna's score")
-;(print (cog-value hanna score))
-;(print (cog-execute! find-users))
-;(print (cog-execute! get-users))
-;(print "hanna's shares")
-;(print (user-shares hanna (PredicateNode "is-fast")))
-;(print "john's shares")
-;(print (user-shares john (PredicateNode "is-fast")))
-;(print "maker of 'is-fast' predicate: ")
-;(print (get-maker (PredicateNode "is-fast")))
-;(print "all users attached to 'is-fast':")
-;(print (get-pred-users (PredicateNode "is-fast")))
-;(print (Not (PredicateNode "is-fast")))
-;(print (cog-execute! find-users))
-;(print (mk-predicate (ConceptNode "Hanna") "is-fast" 0.6 10))
-;(print (cog-execute! pidefine pred-quantz (map + (list (cog-number (quantity predicate)) (cog-number (quantity (Not predicate)))) quantz)) redicate-search))      
-;(print (get-pred-users (Not (PredicateNode "is-fast")))) 
-;(print (change-cost (PredicateNode "is-fast") 0.01 10))
-;(print (change-quantity (PredicateNode "is-fast") 0.01 10)) 
-;(print (change-cost (PredicateNode "is-fast") 0.9 10))
-;(print (change-quantity (PredicateNode "is-fast") 0.9 10))
-;(print (expected-gain (list 0.9 0.1) (change-quantity (PredicateNode "is-fast") 0.9 10)))
-;(print (worst-case (change-quantity (PredicateNode "is-fast") 0.9 10)))
-;(print (best-case (change-quantity (PredicateNode "is-fast") 0.9 10)))  
-;(print (lookup_cases (PredicateNode "is-fast") 0.9 10))
-;(change-predicate john (Predicate "is-fast") 0.1 10)
-;(print "john's scores: ")
-;(print (cog-value john score))
-;(print "hanna's scores: ")
-;(print (cog-value hanna score))
-;(print "not is fast probability (should be 0.99)")
-;(print (Not (Predicate "is-fast")))
-;(print "hanna's shares")
-;(print (user-shares hanna (PredicateNode "is-fast")))
-;(print "john's shares")
-;(print (user-shares john (PredicateNode "is-fast")))
-;(print "john's shares of negated predicate")
-;(print (user-shares john (Not (Predicate "is-fast"))))
-;(print "maker of 'is-fast' predicate: ")
-;(print (get-maker (PredicateNode "is-fast")))
-;(print "all users attached to 'is-fast':")
-;(print (get-pred-users (PredicateNode "is-fast")))
+;(make-user "john" "steward")
+;(make-user "hanna" "rodwinkle")

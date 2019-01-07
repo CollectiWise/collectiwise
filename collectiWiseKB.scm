@@ -132,6 +132,19 @@
 (print (get-pred-users (PredicateNode "is-fast")))
 (print "all users:")
 (print (cog-execute! find-users))
+(define java (ConceptNode "Java"))
+(define is-fast (Predicate "is-fast"))
+(mk-context-predicate johannes java is-fast 0.2 10)
+;(change-context-predicate lorena java (PredicateNode "is-fast") 0.4 10)
+(define neg-pred (Not is-fast))
+(define neg-context (contextualize neg-pred java 0.5))
+(define context-predicate (contextualize is-fast java 0.5))
+(change-binary-statement lorena context-predicate neg-context 0.5 10)
+(define maker (get-maker context-predicate)) 
+;(print maker)
+(print (find-context java))
+
+
 ; is Johannes fast?  Now here please recognize that the first number in the stv (the only relevant one for the time being) can be interpreted as a probability if a person can either be fast or slow, or it could be interpreted as a degree of being fast.  Once there is evidence, the probability and thus the market price of the value will either rise or decline, depending on the evidence and thus the value of holding shares (if you will) in the speed of Johannes will rise or decline, depending on the evidence and depending on others beliefs:
 
 ;; Probability of being fast, market
@@ -146,7 +159,8 @@
 ;                    (ListLink (Variable "$X") (NumberNode 100000)))
 ;            (Inheritance (VariableNode "$X") (ConceptNode "animal")))))
 ;
-(define ms 3)
+;(define ms 3)
 (use-modules (opencog miner))
 (define minedPatterns (cog-mine (cog-atomspace)) )
 ;(print minedPatterns)
+;(help cog-mine)
