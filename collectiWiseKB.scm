@@ -146,6 +146,41 @@
 
 (mk-predicate-with-objects johannes is-fast (ListLink johannes) 0.8 10)
 
+(define (two-are-fast p)
+	(LambdaLink (stv p 1)
+   		(VariableList
+      			(TypedVariableLink
+         			(VariableNode "$X")
+        			 (TypeNode "ConceptNode")
+      			)
+      			(TypedVariableLink
+         			(VariableNode "$Y")
+         			(TypeNode "ConceptNode")
+      			)
+   		)
+   		(AndLink
+      			(InheritanceLink
+         			(VariableNode "$Y")
+         			(ConceptNode "Developer")
+      			)
+      			(InheritanceLink
+         			(VariableNode "$X")
+         			(ConceptNode "Developer")
+      			)
+   		)
+   		(AndLink
+      			(EvaluationLink
+         			(PredicateNode "is-fast")
+         			(VariableNode "$Y")
+      			)
+      			(EvaluationLink
+         			(PredicateNode "is-fast")
+         			(VariableNode "$X")
+      			)		
+   		)
+	)
+)
+
 
 ; is Johannes fast?  Now here please recognize that the first number in the stv (the only relevant one for the time being) can be interpreted as a probability if a person can either be fast or slow, or it could be interpreted as a degree of being fast.  Once there is evidence, the probability and thus the market price of the value will either rise or decline, depending on the evidence and thus the value of holding shares (if you will) in the speed of Johannes will rise or decline, depending on the evidence and depending on others beliefs:
 

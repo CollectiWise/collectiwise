@@ -44,6 +44,8 @@
    	)
 )
 
+
+
 (is-a "User" "Human" 1)
 (is-a "Human" "Animal" 1)
 
