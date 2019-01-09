@@ -48,30 +48,30 @@ notify = lambda string: NotLink(PredicateNode(string[len("not")+1:])) if "not"==
 #actually doing the conversion from a list of strings to a list of predicates and negated predicates.
 predicates =lambda strings: [notify(string) for string in strings]
 
-def variableStatement(types, statements, p, link=AndLink):
+def variableTypedAndOr(types, statements, p, link=AndLink, neg=False):
 	#such statements have a list of types (such as "developer", "church", "ice-cream-truck" 
 	#and attribute one statement to each type (ice-cream-truck is-slow) connecting the statements with either an and or an or statement 
+	reverse_dict ={AndLink : OrLink, OrLink: AndLink}
+	if neg: 
+		p=1-p
 
 	iter = alphabet_cycle()
 	variables = [VariableNode("$"+next(iter)) for ty in types]
 	wrappedVars =VariableList(*[TypedVariableLink(var, TypeNode("ConceptNode")) for var in variables])
 	inheritance =AndLink(*[InheritanceLink(var, typ) for var, typ in zip(variables, types)])
-	statement   =link(*[EvaluationLink(statement, var) for statement, var in zip(statements, variables)])
- 	
+	if not neg:	
+		statement =bind([EvaluationLink(statement, var) for statement, var in zip(statements, variables)], False, link)
+	else:
+		statement =reverse_dict[link](*[EvaluationLink(negdouble(statement, False), var) for statement, var in zip(statements, variables)]) 		
 	return LambdaLink(wrappedVars, inheritance, statement).truth_value(p, 1).long_string()
 
 
+
+#--------------------------------------------examples-------------------------------------------------------------------
 conditionz = predicates(["is-fast", "not-is-big", "is-cleaver"])
 
-print(variableStatement([ConceptNode("Developer"), ConceptNode("User")], [PredicateNode("is-fast"), PredicateNode("is-clean")], 0.4, link=OrLink))
-#print(neg_bind(conditionz))
-#print(bind(conditionz, link=OrLink))
-print(neg_bind(conditionz, link=OrLink))
 John = ConceptNode("John")
 
 scheme_eval(atomspace, "(mk-binary-statement "+John.long_string()+ bind(conditionz)+ neg_bind(conditionz)+ "0.3 10)")
 
-LambdaLink(VariableList(TypedVariableLink(VariableNode("$X"), TypeNode("ConceptNode")), TypedVariableLink(VariableNode("$Y"), TypeNode("ConceptNode"))), AndLink(EvaluationLink(PredicateNode("is-honest"), VariableNode("$X"))))
-
-#for i in range(30):
-#	print(next(iter))
+print(variableTypedAndOr([ConceptNode("user"), ConceptNode("ice-cream-truck"), ConceptNode("Developer")], conditionz, 0.4, neg=True))
