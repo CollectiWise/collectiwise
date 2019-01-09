@@ -15,14 +15,8 @@ scheme_eval(atomspace, """
  			""")
 
 
-atom = ConceptNode("handle bar")
 
-line =atom.long_string()
-
-#print(line)
-#print(atom.type_name)
-
-def alphabet_cycle():
+def alphabet_cycle(): #this generator generates labels for variables. 
     while 1:
         for c in string.ascii_lowercase: 
             yield c	 
