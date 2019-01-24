@@ -3,6 +3,7 @@ from opencog.type_constructors import *
 from opencog.utilities import initialize_opencog
 from opencog.scheme_wrapper import scheme_eval 
 import string
+import json
 atomspace = AtomSpace()
 
 initialize_opencog(atomspace)
@@ -68,6 +69,36 @@ def variableTypedAndOr(types, statements, p, link=AndLink, neg=False):
 
 
 #--------------------------------------------examples-------------------------------------------------------------------
+sample_json = json.dumps({
+        "desc": "An imperial gravitational unit which is equivalent to a mass that accelerates by 1ft/s\u00b2 when a force of one pound (lbf) is exerted on it.", 
+        "id": "UO:0010039", 
+        "name": "slug", 
+        "other": {
+            "created_by": [
+                "Luke Slater"
+            ], 
+            "id": [
+                "UO:0010039"
+            ], 
+            "is_a": [
+                "UO:0000111"
+            ], 
+            "namespace": [
+                "unit.ontology"
+            ], 
+            "subset": [
+                "unit_slim"
+            ]
+        }, 
+        "relations": {
+            "is_a": [
+                "UO:0000111"
+            ]
+        }
+    })
+
+print(sample_json)
+
 conditionz = predicates(["is-fast", "not-is-big", "is-cleaver"])
 
 John = ConceptNode("John")
