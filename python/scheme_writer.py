@@ -9,6 +9,7 @@ import pronto
 class SchemeWriter(object):
     
     def __init__(self, ontology=None, format='json'):
+        assert type(ontology) == pronto.Ontology
         self.ontology = ontology
 
 
@@ -256,8 +257,15 @@ def main():
     print('SDGIO:00000061' in envo)
     force, parsers = envo._get_parsers(None)
 
-    print("force: ", force)
-    print("parsers: ", parsers)                                                                                                                                                                              
+    #print('type(envo)==pronto.Ontology: ', type(envo)==pronto.Ontology)
+    term = [term for term in envo][3391]
+    print(term.id, term.name, term.desc)
+    print(term.synonyms)
+    for relation in term.relations:
+        for rel in term.relations[relation]:
+            print(term.id, relation.obo_name, rel.id)     
+    print(term.other)
+                                                                                                                                                                                 
     writer=SchemeWriter(envo, [sample_json])
     for inpt in writer.ontology:
         #print('term: ', eval(inpt.json)[inpt.id].keys())
@@ -267,10 +275,10 @@ def main():
        
         #for name in ['id', 'name', 'desc']:
             
-        print(inpt.id, 'id', inpt.id)
-        print(inpt.id, 'name', inpt.name)
-        print(inpt.id, 'description', inpt.desc)
-        print(relation_names, other_names)
+        #print(inpt.id, 'id', inpt.id)
+        #print(inpt.id, 'name', inpt.name)
+        #print(inpt.id, 'description', inpt.desc)
+        #print(relation_names, other_names)
         #print([(inpt.id, 'id', inpt.id)] + [(inpt.id, key, val) for key, value in inpt.other.items() for val in value if key!='id'])
     #for r in relationships:
     #    print(r.__dict__)
