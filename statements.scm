@@ -28,13 +28,13 @@
 (define (is_symmetric predicate x y p)
 	(ImplicationScope (stv p 1)
    		(Evaluation
-      			(Predicate predicate)
+      			(PredicateNode predicate)
       			(List
          			(ConceptNode x)
          			(ConceptNode y))
 		)
    		(Evaluation
-      			(Predicate predicate)
+      			(PredicateNode predicate)
       			(List
          			(ConceptNode y)
 				(ConceptNode x))
