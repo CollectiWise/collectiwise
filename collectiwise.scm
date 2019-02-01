@@ -16,7 +16,7 @@
 (add-to-load-path "..")
 (define shares (ConceptNode "shares"))
 (define score (Concept "score")) 
-(define User (ConceptNode "User" (stv 0.01 1)))
+(define User (ConceptNode "User"))
 (define Animal (ConceptNode "Animal" (stv 0.1 1)))
 (define alive (PredicateNode "alive" (stv 0.01 1))) ; something is alive
 (define user_animal (InheritanceLink User Animal (stv 1 1))) ; all users are animals; defined by us (no market needed)
@@ -57,14 +57,15 @@
   )
 )
 
-(define find-users
-    (BindLink
-        (VariableNode "$X")
-        (InheritanceLink
+(define (find-users)
+    (cog-execute! 
+        (BindLink
             (VariableNode "$X")
-            (ConceptNode "User"))
+            (InheritanceLink
+                (VariableNode "$X")
+                (ConceptNode "User"))
         (ListLink
-            (VariableNode "$X"))))
+            (VariableNode "$X")))))
                                  
 ; all users have an account with scores
 (define (add-score user n)
@@ -281,7 +282,7 @@
 
 
 ;(mk-context-predicate (ConceptNode "Johannes Castner") (ConceptNode "Java") (PredicateNode "is-fast" (stv 0.7 1)) 0.2 10)
-
+;(find-users)
 ;(print (find-context (ConceptNode "Java")))
 ;(print (cost '(1 2) 10))
 ;(print (cost '(1 2 3)  10))
@@ -291,3 +292,4 @@
 ;(print (price (quantities '(0.6 0.4) 10) 10 10))
 ;(make-user "john" "steward")
 ;(make-user "hanna" "rodwinkle")
+;(print (find-users))

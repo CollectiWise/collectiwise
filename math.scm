@@ -31,7 +31,7 @@
         ((> (car lst) (list_max (cdr lst))) (car lst))
 	(else (list_max (cdr lst)))) )
 
-(print (sqrt 9))
-(print (list_sum (list 1 2 2)))
-(print (average 3 4)) 
-(print (square 3)) 
+;(print (sqrt 9))
+;(print (list_sum (list 1 2 2)))
+;(print (average 3 4)) 
+;(print (square 3)) 

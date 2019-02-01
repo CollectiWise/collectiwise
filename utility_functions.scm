@@ -105,6 +105,6 @@
 (define (cog-tv-strength-above y z) (filter (lambda (x) (> (cog-tv-strength x) y)) z))
 
 ; after an Atom is added:
-(print (cnt-all))
-(show-cnts)
-(prt-atomspace)
+;(print (cnt-all))
+;(show-cnts)
+;(prt-atomspace)

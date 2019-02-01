@@ -2,4 +2,4 @@
 
 (define p (PredicateNode "p" (stv 0.6 1)))
 (cog-execute! negation-introduction-rule)
-(print (Not p))
+;(print (Not p))
