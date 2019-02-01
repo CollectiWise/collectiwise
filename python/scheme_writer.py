@@ -30,7 +30,20 @@ class SchemeRouter(object):
         assert type(ontology) == pronto.Ontology
         self.ontology = ontology
     
-    def process(self, json_data):
+    def process(self, json_data): 
+        #add non-ontological logic (Implications etc.) here! The json_data must be first seperated into stuff that
+        #should be in the ontology and stuff that has no owl or obo representations or is private and thus shouldn't
+        #be part of the ontology. 
+        #Ontological reasoning ought to be seperated from other reasoning 
+        #and while it is useful to keep an ontology in memory, logic ought to be saved only in the AtomSpace. 
+        #Also, we'll need to put personal non-public user data etc. only into the AtomSpace, 
+        #while we may expose our ontology to either the public, or to some audience who cares.
+        #the obo presentation of our ontology is available simply as rounter.ontology.obo and similarly the owl representation
+        #is available as router.ontology.owl and we can simply make that available on their own respective urls:
+        #www.collectiwise.com/ontology.owl and www.collectiwise.com/ontology.obo and those can be updated dynamically by filtering
+        #inside of this method, which of the json_data should be made available to the public ontology and which should not. 
+        #any non-ontological statements (implications etc.) don't have owl or obo representations and thus they shall not be included.  
+
         self.ontology.include_json(json_data)
 
     def _predicate_scheme_eval(self, prop_name, predicate, thing1, thing2):
@@ -129,7 +142,8 @@ def main():
         pred_names[pred.obo_name] = pred_names.get(pred.obo_name, 0) + 1
 
     print('is_a' in pred_names)
-    print('disjoint_from' in pred_names) 
+    print('disjoint_from' in pred_names)
+    print(router.ontology.meta) 
 if __name__ == "__main__":
     main()
 
