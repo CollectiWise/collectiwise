@@ -20,17 +20,17 @@
         (property "desc" x d)
 )
 
-(define (is_a x y p); users should be allowed to make such statements, either probabilistically or certainly (maybe using voting) 
+(define (is_a x y p); users should be allowed to make such statements, either probabilistically or certainly (maybe using voting)
 	(ListLink
    		(InheritanceLink (stv p 1)
       			(ConceptNode x)
       			(ConceptNode y)
    		)
-   	
+
    	)
 )
 
-;practical meaning of properties of relations; for terms (shortcut so that PLN doesn't have to do the work 
+;practical meaning of properties of relations; for terms (shortcut so that PLN doesn't have to do the work
 (define (symmetry predicate x y p)
 	(AndLink (stv p 1)
    		(Evaluation
@@ -49,7 +49,28 @@
 )
 
 (define (reflexivity predicate x y p)
-        (ConceptNode "reflexivity!")
+        (ImplicationScope (stv p 1)
+             (VariableList
+                 (TypedVariable
+                     (VariableNode "$x")
+                     (Type "ConcseptNode"))
+                  (TypedVariable
+                         (VariableNode "$y")
+                         (Type "ConceptNode"))
+              (AndLink (stv p 1)
+               (Evaluation
+                   (PredicateNode predicate)
+                       (VariableNode "$x")
+                       (VariableNode "$y")); how to make evaluate run "is a function?"
+                (Evaluation
+                    (PredicateNode predicate)
+                        (VariableNode "$x")
+                        (VariableNode "$x")))
+
+
+
+
+
 )
 
 (define (transitivity predicate x y p)
@@ -81,7 +102,9 @@
 
 (define (variable_reflexivity predicate p)
         (ConceptNode "variable_reflexivity")
+
 )
+union
 
 (define (variable_transitivity predicate p)
         (ConceptNode "variable_transitivity")
