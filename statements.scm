@@ -112,5 +112,39 @@
 union
 
 (define (variable_transitivity predicate p)
-        (ConceptNode "variable_transitivity")
+        (ImplicationScope (stv p 1)
+            (VariableList
+                (TypedVariable
+                    (VariableNode "$A")
+                    (Type "ConceptNode"))
+                (TypedVariable
+                    (VariableNode "$B")
+                    (Type "ConceptNode"))
+                (TypedVariable
+                (VariableNode "$C")
+                    (Type "ConceptNode"))
+
+             )
+             (AndLink (stv p 1)
+                (Evaluation
+                        (PredicateNode predicate)
+                        (List
+                                (VariableNode "$A")
+                                (VariableNode "$B"))
+                )
+                (Evaluation
+                        (PredicateNode predicate)
+                        (List
+                                (VariableNode "$B")
+                                (VariableNode "$C"))
+                )
+            )
+            (Evaluation
+                      (PredicateNode predicate)
+                      (List
+                           (VariableNode "$A")
+                           (VariableNode "$C"))
+
+             )
+           )
 )
