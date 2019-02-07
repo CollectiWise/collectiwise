@@ -72,7 +72,7 @@ class SchemeRouter(object):
     def predicate_to_scheme(self, predicate):
         for prop in predicate.properties:
             if predicate.properties[prop]:
-                scheme_eval(atomspace, '(variable_'+ prop + ' "' + predicate.obo_name + '" 1)').decode("utf-8").strip()
+                print(scheme_eval(atomspace, '(variable_'+ prop + ' "' + predicate.obo_name + '" 1)').decode("utf-8").strip())
         '''
         #still have to deal with these properties:
         print(predicate.complementary)
@@ -131,7 +131,7 @@ def main():
                                                                                                                                                                                 
     router=SchemeRouter(envo)
     router.process(sample_json)
-    print(router.ontology.predicate_properties['transitivity'] - router.ontology.predicate_properties['reflexivity'])
+    print(router.ontology.predicate_properties['transitivity'])
     same_term = router.ontology["UO:0010039"]
       
     #print(scheme_eval(atomspace, '(cog-execute! (find-users))').decode("utf-8"))
