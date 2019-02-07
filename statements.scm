@@ -57,15 +57,20 @@
                   (TypedVariable
                          (VariableNode "$y")
                          (Type "ConceptNode"))
-              (AndLink (stv p 1)
-               (Evaluation
+
+                (Evaluation
                    (PredicateNode predicate)
                        (VariableNode "$x")
-                       (VariableNode "$y")); how to make evaluate run "is a function?"
-                (Evaluation
-                    (PredicateNode predicate)
-                        (VariableNode "$x")
-                        (VariableNode "$x")))
+                       (VariableNode "$y")) ; y represents any other element in the same hence
+                (AndLink
+                  (Evaluation
+                      (PredicateNode predicate)
+                          (VariableNode "$x")
+                          (VariableNode "$x"))
+                  (Evaluation
+                      (PredicateNode predicate)
+                          (VariableNode "$y")
+                          (VariableNode "$y")))
 
 
 
