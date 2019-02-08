@@ -73,7 +73,7 @@
              (VariableList
                  (TypedVariable
                      (VariableNode "$x")
-                     (Type "ConcseptNode"))
+                     (Type "ConceptNode"))
                   (TypedVariable
                          (VariableNode "$y")
                          (Type "ConceptNode")))
@@ -147,7 +147,7 @@
                     (Type "ConceptNode"))
 
              )
-             (AndLink (stv p 1)
+             (AndLink
                 (Evaluation
                         (PredicateNode predicate)
                         (List
