@@ -49,6 +49,26 @@
 )
 
 (define (reflexivity predicate x y p)
+     (AndLink (stv p 1)
+	(Evaluation
+		(PredicateNode predicate)
+		(list 
+			(ConceptNode x)
+			(ConceptNode y)))
+	(Evaluation
+		(PredicateNode predicate)
+		(List 
+			(ConceptNode x)
+			(ConceptNode x)))
+	(Evaluation
+		(PredicateNode predicate)
+		(List
+			(ConceptNode y)
+			(ConceptNode y)))
+     )        
+)
+
+(define (variable_reflexivity predicate p)
         (ImplicationScope (stv p 1)
              (VariableList
                  (TypedVariable
@@ -56,7 +76,7 @@
                      (Type "ConcseptNode"))
                   (TypedVariable
                          (VariableNode "$y")
-                         (Type "ConceptNode"))
+                         (Type "ConceptNode")))
 
                 (Evaluation
                    (PredicateNode predicate)
@@ -72,14 +92,20 @@
                           (VariableNode "$y")
                           (VariableNode "$y")))
 
+                      
 
 
-
-
+        )
 )
 
 (define (transitivity predicate x y p)
-        (ConceptNode "transitivity!")
+        (Evaluation (stv p 1)
+             (PredicateNode predicate)
+             (List
+	         (ConceptNode x)
+                 (ConceptNode y))
+	         ;run PLN logic here to resolve all triadic relations.
+         )
 )
 
 ;properties of relations that are not caught by our initial encoding and have to be worked out by PLN:
@@ -105,11 +131,7 @@
         )
 )
 
-(define (variable_reflexivity predicate p)
-        (ConceptNode "variable_reflexivity")
 
-)
-union
 
 (define (variable_transitivity predicate p)
         (ImplicationScope (stv p 1)
