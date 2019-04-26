@@ -16,11 +16,11 @@ atomspace = AtomSpace()
 initialize_opencog(atomspace)
 
 scheme_eval(atomspace, """
-                        (load "/home/ubuntu/collectiwise/load_all.scm")
-                        (add-to-load-path "/home/ubuntu/collectiwise")
-                        (load "/home/ubuntu/collectiwise/math.scm")
-                        (load "/home/ubuntu/collectiwise/statements.scm")
-                        (load "/home/ubuntu/collectiwise/collectiwise.scm")
+                        (load "load_all.scm")
+                        (add-to-load-path "collectiwise")
+                        (load "math.scm")
+                        (load "statements.scm")
+                        (load "collectiwise.scm")
                         """)
 
        
