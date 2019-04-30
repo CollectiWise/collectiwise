@@ -1,5 +1,5 @@
 ;(add-to-load-path "~/.")
-(load "/home/ubuntu/collectiwise/load_all.scm")
+(load "/root/collectiwise/load_all.scm")
 (use-modules (opencog))
 (use-modules (opencog query))
 (use-modules (opencog exec))

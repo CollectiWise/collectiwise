@@ -14,9 +14,8 @@ import pronto
 atomspace = AtomSpace()
 
 initialize_opencog(atomspace)
-
+# (load "load_all.scm") #
 scheme_eval(atomspace, """
-                        (load "load_all.scm")
                         (add-to-load-path "collectiwise")
                         (load "math.scm")
                         (load "statements.scm")

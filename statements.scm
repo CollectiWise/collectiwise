@@ -1,4 +1,4 @@
-(load "/home/ubuntu/collectiwise/math.scm")
+(load "/root/collectiwise/math.scm")
 
 ;utility functions that are repeatedly used by the main functions:
 (define (property prop x p)
