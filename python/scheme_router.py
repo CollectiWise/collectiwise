@@ -129,15 +129,17 @@ def main():
     random_term=envo[list(envo.terms.keys())[7952]]
                                                                                                                                                                                 
     router=SchemeRouter(envo)
-    router.process(sample_json)
-    print(router.ontology.predicate_properties['transitivity'])
-    same_term = router.ontology["UO:0010039"]
+    #here we will ingest json and json-ld but that isn't the priority until we know exactly how the json comes in from the frontend.  
+    #router.process(sample_json)
+    #print(router.ontology.predicate_properties['transitivity'])
+    #same_term = router.ontology["UO:0010039"]
       
     #print(scheme_eval(atomspace, '(cog-execute! (find-users))').decode("utf-8"))
-    router.term_to_scheme(random_term)
+    #router.term_to_scheme(random_term)
     pred_names={}
     for pred in envo.typedefs:
-        #print('predicate: '+ pred.obo_name)
+        print('predicate: '+ pred.obo_name)
+        print(dir(pred))
         router.predicate_to_scheme(pred) 
         pred_names[pred.obo_name] = pred_names.get(pred.obo_name, 0) + 1
 
