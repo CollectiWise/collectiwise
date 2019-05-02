@@ -139,7 +139,6 @@ def main():
     pred_names={}
     for pred in envo.typedefs:
         print('predicate: '+ pred.obo_name)
-        print(dir(pred))
         router.predicate_to_scheme(pred) 
         pred_names[pred.obo_name] = pred_names.get(pred.obo_name, 0) + 1
 
