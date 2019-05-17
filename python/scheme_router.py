@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#/usr/bin/env python3
 # 2019-01
 # Script to convert envo.obd to atomspace representation in scheme
 # Requires: file envo.obo from http://www.berkeleybop.org/ontologies/envo.obo
