@@ -210,6 +210,18 @@
 	(define neg-relationship (Not relationship))
 	(mk-binary-statement user relationship neg-relationship p b)
  )
+
+(define (mk-attribute userString concept predicate contxt p b)
+	(define pred (Predicate predicate))
+	(define user (ConceptNode userString))
+	(define cncpt (ConceptNode concept))
+	(define attribute (EvaluationLink (stv p 1.0) pred cncpt))
+	(define neg-attribute (Not attribute))
+	(contextualize attribute (ConceptNode contxt) 1.0)
+	(contextualize neg-attribute (ConceptNode contxt) 1.0)
+	(mk-binary-statement user attribute neg-attribute p b)
+
+)
 ;(define (change-cost predicate quant)
 ;	(define quantities (list (quantity predicate) (quantity (Not predicate))))
 ;	b*ln(sum([e**(qi/b) for qi in quantities])) - (cost quantities b)
