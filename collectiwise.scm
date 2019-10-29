@@ -224,6 +224,13 @@
 
 )
 
+(define (change-relationship userString concept1 concept2 relation p b)
+  	(define user (ConceptNode userString))
+	(define relationship (EvaluationLink (PredicateNode relation) (ListLink (ConceptNode concept1) (ConceptNode concept2))))
+	(define neg-relationship (Not relationship))
+	(change-binary-statement user relationship neg-relationship p b)
+)
+
 (define (change-attribute userString concept predicate contxt p b)
   	(define pred (Predicate predicate))
 	(define user (ConceptNode userString))
