@@ -198,6 +198,7 @@
 	(attach neg-statement user) 	
   )
 
+
 (define (mk-predicate user predicate p b)
 	(define pred (Predicate predicate (stv p 1)))
 	(define neg-pred (Not pred)) 	 	
@@ -221,6 +222,12 @@
 	(contextualize neg-attribute (ConceptNode contxt) 1.0)
 	(mk-binary-statement user attribute neg-attribute p b)
 
+)
+
+(define (change-attribute userString concept predicate contxt p b)
+  	(define pred (Predicate predicate))
+	(define user (ConceptNode userString))
+	(define cncpt (ConceptNode concept))
 )
 ;(define (change-cost predicate quant)
 ;	(define quantities (list (quantity predicate) (quantity (Not predicate))))
