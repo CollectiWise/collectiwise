@@ -228,6 +228,12 @@
   	(define pred (Predicate predicate))
 	(define user (ConceptNode userString))
 	(define cncpt (ConceptNode concept))
+	(define attribute (EvaluationLink pred cncpt))
+	(define neg-attribute (Not attribute))
+	(contextualize attribute (ConceptNode contxt) 1.0)
+	(contextualize neg-attribute (ConceptNode contxt) 1.0)
+	(change-binary-statement user attribute neg-attribute p b)
+
 )
 ;(define (change-cost predicate quant)
 ;	(define quantities (list (quantity predicate) (quantity (Not predicate))))
