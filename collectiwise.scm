@@ -145,7 +145,6 @@
 ;(define (set-user-quantity user p n))
 
 ; Functions we still need:
-
 (define (made-by predicate user) (EvaluationLink (PredicateNode "made-by") (ListLink predicate user)))
 
 (define (get-maker predicate)
@@ -177,6 +176,8 @@
 (define (attach predicate user) 
 	(EvaluationLink (PredicateNode "traded-in") (ListLink predicate user)))
 ; (define (change-probability predicate user new-pr) should change the probability of the predicate to new-pr, it should also assign new quantities of the predicate as a whole and of the shares of the user and it should attach the user to that predicate as one of the users)
+;mk-concept
+(define (mk-concept user name) (ConceptNode name) (made-by (ConceptNode name) (ConceptNode user)))
 
 (define (set-user-shares user predicate n) (cog-set-value! (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares (NumberNode n)))
 (define (user-shares user predicate) (define inner (cog-value (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares)) (if (null? inner) (NumberNode 0) inner))
@@ -203,6 +204,12 @@
 	(mk-binary-statement user pred neg-pred p b)	
 ) 
 
+(define (mk-relationship userString concept1 concept2 relation p b)
+  	(define user (ConceptNode userString))
+	(define relationship (EvaluationLink (PredicateNode relation) (ListLink (ConceptNode concept1) (ConceptNode concept2))))
+	(define neg-relationship (Not relationship))
+	(mk-binary-statement user relationship neg-relationship p b)
+ )
 ;(define (change-cost predicate quant)
 ;	(define quantities (list (quantity predicate) (quantity (Not predicate))))
 ;	b*ln(sum([e**(qi/b) for qi in quantities])) - (cost quantities b)
