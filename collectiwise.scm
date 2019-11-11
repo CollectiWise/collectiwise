@@ -126,8 +126,8 @@
 )
 
 (define (lookup_cases predicate p b)
-	(define costs (change-cost predicate p b))
-	(define quantz (change-quantity predicate p b))
+	(define costs (change-cost predicate (Not predicate) p b))
+	(define quantz (change-quantity predicate (Not predicate) p b))
 	(list (- (worst-case quantz) costs) (- (expected-gain (list p (- 1 p)) quantz) costs) (- (best-case quantz) costs))
 )
 ; the price of one case among n cases
