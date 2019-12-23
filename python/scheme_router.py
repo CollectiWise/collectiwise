@@ -45,18 +45,18 @@ class SchemeRouter(object):
 
         self.ontology.include_json(json_data)
 
-    def _predicate_scheme_eval(self, prop_name, predicate, thing1, thing2):
+    def _attribute_scheme_eval(self, prop_name, predicate, thing1, thing2):
        
         return scheme_eval(atomspace, '(' +prop_name + ' "'+predicate + '" "' 
                              + thing1 + '" "' + thing2 + '" 1)').decode("utf-8").strip()
 
-    def _relation_properties(self, relation, thing1, things2, indicators):
+    def _relationship_properties(self, relation, thing1, things2, indicators):
         if relation=='is_a': 
             return [scheme_eval(atomspace, '(' + relation + ' "' + thing1 + '" "' + thing2 + '" 1)') for thing2 in things2]
        
         for label in indicators:
             if indicators[label]:
-                [self._predicate_scheme_eval(label, relation, thing1, thing2) for thing2 in things2]     
+                [self._attribute_scheme_eval(label, relation, thing1, thing2) for thing2 in things2]     
 
 
     def term_to_scheme(self, term, write=True):
@@ -65,7 +65,7 @@ class SchemeRouter(object):
         scheme_eval(atomspace, '(has_name "'+ term.id + '" "'+ term.name +'")').decode("utf-8").strip()
         scheme_eval(atomspace, '(has_desc "'+ term.id + '" "'+ term.desc +'")').decode("utf-8").strip()
         for rel in term.relations:
-            self._relation_properties(rel.obo_name, term.id, [t.id for t in term.relations[rel]], rel.properties)
+            self._relationship_properties(rel.obo_name, term.id, [t.id for t in term.relations[rel]], rel.properties)
         #still have to deal with term.synonyms and term.other.
  
     def predicate_to_scheme(self, predicate):
