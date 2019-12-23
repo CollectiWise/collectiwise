@@ -76,8 +76,10 @@
 	)
 )
 
-(define (make-user f l)
-	(define usr (ConceptNode (name f l)))
+(define (make-user id f l)
+	(define usr (ConceptNode id))
+	(EvaluationLink (PredicateNode "has-first-name") (ListLink (ConceptNode f) usr))
+	(EvaluationLink (PredicateNode "has-last-name") (ListLink (ConceptNode l) usr))
 	(InheritanceLink usr User (stv 1 1))
 	(cog-execute! deduction-inheritance-rule); deduce what it logically means to be a user (to be a human and an animal etc.)
 	(cog-set-value! usr score (NumberNode 100000))
