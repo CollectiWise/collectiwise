@@ -174,6 +174,18 @@
             (VariableNode "$U"))))
         (cog-execute! (inner predicate)))
 
+(define (find-synonyms concept)
+    (define (inner conc)
+    (BindLink
+        (EvaluationLink
+        (PredicateNode "name")
+                (ListLink
+                        conc
+                        (VariableNode "$U")))
+        (ListLink
+            (VariableNode "$U"))))
+        (cog-execute! (inner concept)))
+
 
 ; (define (get-predicate-users) (all-the users who have shares in a predicate))
 (define (attach predicate user) 
@@ -324,8 +336,8 @@
 
 ;(mk-context-predicate (ConceptNode "Johannes Castner") (ConceptNode "Java") (PredicateNode "is-fast" (stv 0.7 1)) 0.2 10)
 ;(find-users)
-;(print (find-context (ConceptNode "Java")))
-;(print (cost '(1 2) 10))
+;(mk-concept "IDCONC" "Java" "ID1")
+;(print (find-synonyms (ConceptNode "IDCONC")))
 ;(print (cost '(1 2 3)  10))
 ;(print (price '(1 3 2) 1 10));
 ;(print (price '(1 5) 1 10))
