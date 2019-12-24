@@ -148,6 +148,7 @@
 
 ; Functions we still need:
 (define (made-by predicate user) (EvaluationLink (PredicateNode "made-by") (ListLink predicate user)))
+(define (has-name concept name) (EvaluationLink (PredicateNode "name") (ListLink concept name)))
 
 (define (get-maker predicate)
     (define (inner pred) 
@@ -179,7 +180,7 @@
 	(EvaluationLink (PredicateNode "traded-in") (ListLink predicate user)))
 ; (define (change-probability predicate user new-pr) should change the probability of the predicate to new-pr, it should also assign new quantities of the predicate as a whole and of the shares of the user and it should attach the user to that predicate as one of the users)
 ;mk-concept
-(define (mk-concept user name) (ConceptNode name) (made-by (ConceptNode name) (ConceptNode user)))
+(define (mk-concept concept name user) (ConceptNode concept) (has-name (ConceptNode concept)(ConceptNode name)) (made-by (ConceptNode concept) (ConceptNode user)))
 
 (define (set-user-shares user predicate n) (cog-set-value! (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares (NumberNode n)))
 (define (user-shares user predicate) (define inner (cog-value (EvaluationLink (AnchorNode "shares") (ListLink user predicate)) shares)) (if (null? inner) (NumberNode 0) inner))
