@@ -68,8 +68,8 @@
      )        
 )
 
-(define (variable_reflexivity predicate p)
-        (ImplicationScope (stv p 1)
+(define (variable_reflexivity predicate)
+        (ImplicationScope 
              (VariableList
                  (TypedVariable
                      (VariableNode "$x")
@@ -98,8 +98,8 @@
         )
 )
 
-(define (transitivity predicate x y p)
-        (Evaluation (stv p 1)
+(define (transitivity predicate x y)
+        (Evaluation 
              (PredicateNode predicate)
              (List
 	         (ConceptNode x)
@@ -109,8 +109,8 @@
 )
 
 ;properties of relations that are not caught by our initial encoding and have to be worked out by PLN:
-(define (variable_symmetry predicate p)
-        (ImplicationScope (stv p 1)
+(define (variable_symmetry predicate)
+        (ImplicationScope 
              (VariableList
                  (TypedVariable
                      (VariableNode "$X")
@@ -133,8 +133,8 @@
 
 
 
-(define (variable_transitivity predicate p)
-        (ImplicationScope (stv p 1)
+(define (variable_transitivity predicate)
+        (ImplicationScope 
             (VariableList
                 (TypedVariable
                     (VariableNode "$A")
