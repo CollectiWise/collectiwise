@@ -301,7 +301,7 @@
 
 (define (mk-context-predicate userid NC predicate)
 	(define user (ConceptNode userid))
-	(define context-predicate (contextualize predicate (ConceptNode NC) 1)) 
+	(define context-predicate (contextualize (PredicateNode predicate) (ConceptNode NC) 1)) 
 	(made-by context-predicate user) 		
 )
 
