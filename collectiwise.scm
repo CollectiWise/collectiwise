@@ -214,10 +214,10 @@
   )
 
 
-(define (mk-predicate user predicate p b)
-	(define pred (Predicate predicate (stv p 1)))
-	(define neg-pred (Not pred)) 	 	
-	(mk-binary-statement user pred neg-pred p b)	
+(define (mk-predicate userid predicate)
+  	(define user (ConceptNode userid))
+	(define pred (Predicate predicate))
+	(made-by pred user)	
 ) 
 
 (define (mk-relationship userString concept1 concept2 relation p b)
@@ -297,16 +297,12 @@
 		list-link-objects
 		
 	)
-) 
-(define (mk-context-predicate user NC predicate p b)
-	
-	(define context-predicate (contextualize predicate NC p)) 
-	(define neg-pred (Not predicate))
+)
 
-	(define context-negpred (contextualize neg-pred NC (- 1 p))) 
-
-	(mk-binary-statement user context-predicate context-negpred p b)		
-
+(define (mk-context-predicate userid NC predicate)
+	(define user (ConceptNode userid))
+	(define context-predicate (contextualize predicate (ConceptNode NC) 1)) 
+	(made-by context-predicate user) 		
 )
 
 (define (change-context-predicate user NC predicate p b)
