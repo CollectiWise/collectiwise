@@ -115,6 +115,9 @@
 	(map - new_quantities quantitees) 	
 )
 
+(define (get-quantities statement)
+  	(list (cog-number (quantity statement)) (cog-number (quantity (Not statement)))))
+
 (define (expected-gain probs quantz)
 	(list_sum (map * probs quantz))  
 )
@@ -227,7 +230,8 @@
 	(mk-binary-statement user relationship neg-relationship p b)
  )
 
-(define (mk-attribute userString concept predicate contxt p b)
+(define (mk-context-attribute userString concept predicate contxt p b)
+ 
 	(define pred (Predicate predicate))
 	(define user (ConceptNode userString))
 	(define cncpt (ConceptNode concept))
@@ -238,6 +242,17 @@
 	(mk-binary-statement user attribute neg-attribute p b)
 
 )
+
+(define (mk-attribute userString concept predicate p b)
+  	(define pred (Predicate predicate))
+	(define user (ConceptNode userString))
+	(define cncpt (ConceptNode concept))
+	(define attribute (EvaluationLink (stv p 1.0) pred cncpt))
+	(define neg-attribute (Not attribute))
+	(mk-binary-statement user attribute neg-attribute p b)
+
+)
+
 
 (define (change-relationship userString concept1 concept2 relation p b)
   	(define user (ConceptNode userString))
