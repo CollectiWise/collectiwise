@@ -150,7 +150,7 @@
 ;(define (set-user-quantity user p n))
 
 ; Functions we still need:
-(define (made-by predicate user) (EvaluationLink (PredicateNode "made-by") (ListLink predicate user)))
+(define (made-by statement user) (EvaluationLink (PredicateNode "made-by") (ListLink statement user)))
 (define (has-name concept name) (EvaluationLink (PredicateNode "name") (ListLink concept name)))
 
 (define (get-maker predicate)
@@ -204,6 +204,7 @@
 	(define qs (quantities (list 0.5 0.5) b))
 	(define NotPQ (* b (log (exp (/ (- 1 p) p)))))	
  	(define points (cost qs b))
+	(cog-set-tv! statement (stv p 1))
 	(cog-set-tv! neg-statement (stv (- 1 p) 1))
 	(made-by statement user)
 	(made-by neg-statement user)
