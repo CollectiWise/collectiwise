@@ -236,10 +236,9 @@
 	(define user (ConceptNode userString))
 	(define cncpt (ConceptNode concept))
 	(define attribute (EvaluationLink (stv p 1.0) pred cncpt))
-	(define neg-attribute (Not attribute))
-	(contextualize attribute (ConceptNode contxt) 1.0)
-	(contextualize neg-attribute (ConceptNode contxt) 1.0)
-	(mk-binary-statement user attribute neg-attribute p b)
+	(define cattribute (contextualize attribute (ConceptNode contxt) 1.0))
+	(define neg-attribute Not cattribute)
+	(mk-binary-statement user cattribute neg-attribute p b)
 
 )
 
@@ -261,15 +260,24 @@
 	(change-binary-statement user relationship neg-relationship p b)
 )
 
-(define (change-attribute userString concept predicate contxt p b)
+(define (change-attribute userString concept predicate p b)
   	(define pred (Predicate predicate))
 	(define user (ConceptNode userString))
 	(define cncpt (ConceptNode concept))
 	(define attribute (EvaluationLink pred cncpt))
 	(define neg-attribute (Not attribute))
-	(contextualize attribute (ConceptNode contxt) 1.0)
-	(contextualize neg-attribute (ConceptNode contxt) 1.0)
 	(change-binary-statement user attribute neg-attribute p b)
+
+)
+
+(define (change-context-attribute userString concept predicate contxt p b)
+  	(define pred (Predicate predicate))
+	(define user (ConceptNode userString))
+	(define cncpt (ConceptNode concept))
+	(define attribute (EvaluationLink pred cncpt))
+	(define cattribute (contextualize attribute (ConceptNode contxt) 1.0))
+	(define neg-attribute (Not cattribute))
+	(change-binary-statement user cattribute neg-attribute p b)
 
 )
 ;(define (change-cost predicate quant)
