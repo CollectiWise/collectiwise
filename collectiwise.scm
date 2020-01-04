@@ -237,7 +237,7 @@
 	(define cncpt (ConceptNode concept))
 	(define attribute (EvaluationLink (stv p 1.0) pred cncpt))
 	(define cattribute (contextualize attribute (ConceptNode contxt) 1.0))
-	(define neg-attribute Not cattribute)
+	(define neg-attribute (contextualize (Not attribute) (ConceptNode contxt) 1.0))
 	(mk-binary-statement user cattribute neg-attribute p b)
 
 )
@@ -276,7 +276,7 @@
 	(define cncpt (ConceptNode concept))
 	(define attribute (EvaluationLink pred cncpt))
 	(define cattribute (contextualize attribute (ConceptNode contxt) 1.0))
-	(define neg-attribute (Not cattribute))
+	(define neg-attribute (contextualize (Not attribute) (ConceptNode contxt) 1.0))
 	(change-binary-statement user cattribute neg-attribute p b)
 
 )
