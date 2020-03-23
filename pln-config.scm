@@ -18,7 +18,7 @@
 
 (use-modules (opencog))
 (use-modules (opencog rule-engine))
-(add-to-load-path "./pln/tests/pln/rules/")
+;(add-to-load-path "./pln/tests/pln/rules/")
 ;; TODO Maybe we can remove that definitely?
 ;; ;XXX This is bad and broken and wrong; one should not try to bypass the
 ;; ; scheme module system like this, its just asking for carpet burns.
@@ -45,7 +45,7 @@
 ;;;;;;;;;;;;;;;;
 
 ;; Load the rules (use load for relative path w.r.t. to that file)
-(define pln-rules-dir "./pln/tests/pln/rules/")
+;(define pln-rules-dir "./pln/tests/pln/rules/")
 (define (append-rule-dir basename) (string-append pln-rules-dir basename))
 (define rule-basenames
   (list "wip/implication-instantiation.scm"
