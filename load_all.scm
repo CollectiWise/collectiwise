@@ -11,7 +11,7 @@
 (use-modules (opencog query))
 (use-modules (opencog exec))
 (use-modules (opencog pln))
-(use-modules (opencog rule-engine))
+(use-modules (opencog ure))
 (load "/root/pln/tests/pln/rules/simple-assertions.scm")
 (load "/root/pln/opencog/pln/rules/term/deduction.scm")
 ;(load "/root/pln/utilities.scm")
