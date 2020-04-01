@@ -9,7 +9,7 @@
 (add-to-load-path "/usr/local/share/opencog/scm")
 (add-to-load-path ".")
 (use-modules (opencog))
-(use-modules (opencog query))
+(use-modules (opencog ure))
 (use-modules (opencog exec))
 (use-modules (opencog pln))
 (add-to-load-path "..")
