@@ -8,7 +8,7 @@
 (use-modules (ice-9 readline)) (activate-readline)
 (add-to-load-path "/usr/local/share/opencog/scm")
 (use-modules (opencog))
-(use-modules (opencog query))
+;(use-modules (opencog query))
 (use-modules (opencog exec))
 (use-modules (opencog pln))
 (use-modules (opencog ure))
